@@ -1,0 +1,32 @@
+{
+  "name": "chaox-api-discord-bot",
+  "version": "1.0.0",
+  "description": "ChaoX 2.0 Discord Bot for use with our API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --experimental-modules index.js",
+    "dev": "nodemon --exec babel-node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Clan-ChaoX/discord.git"
+  },
+  "author": "David Fountain <davfount@gmail.com> (https://github.com/davfount)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Clan-ChaoX/discord/issues"
+  },
+  "homepage": "https://github.com/Clan-ChaoX/discord#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "discord.js": "^14.5.0",
+    "socket.io-client": "^4.5.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.19.1",
+    "@babel/node": "^7.19.1",
+    "@babel/preset-env": "^7.19.1",
+    "nodemon": "^2.0.20"
+  }
+}
