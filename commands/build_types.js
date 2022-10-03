@@ -11,8 +11,8 @@ const config = {
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("game_types")
-    .setDescription("List, Add, Modify & Remove Game Types.")
+    .setName("build_types")
+    .setDescription("List, Add, Modify & Remove Build Types.")
     .addStringOption((option) =>
       option
         .setName("action")
@@ -31,42 +31,59 @@ module.exports = {
         .setDescription("Display Inline? (Default: false)")
     )
     .addIntegerOption((option) =>
-      option.setName("id").setDescription("Game Type ID.").setRequired(false)
+      option.setName("id").setDescription("Build ID.").setRequired(false)
     )
     .addStringOption((option) =>
       option
-        .setName("name")
-        .setDescription("Game Type Name.")
+        .setName("build_name")
+        .setDescription("Build Name.")
         .setRequired(false)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("class_name")
+        .setDescription("Class Name.")
+        .setRequired(false)
+        .addChoices(
+          { name: "Assassin", value: "Assassin" },
+          { name: "Amazon", value: "Amazon" },
+          { name: "Barbarian", value: "Barbarian" },
+          { name: "Druid", value: "Druid" },
+          { name: "Necromancer", value: "Necromancer" },
+          { name: "Paladin", value: "Paladin" },
+          { name: "Sorceress", value: "Sorceress" }
+        )
     ),
   async execute(interaction) {
     const action = interaction.options.getString("action");
-    const game_type = interaction.options.getString("name");
-    const game_type_id = interaction.options.getInteger("id");
+    const class_name = interaction.options.getString("class_name");
+    const build_name = interaction.options.getString("build_name");
+    const build_id = interaction.options.getInteger("id");
     const inline = interaction.options.getBoolean("inline")
       ? interaction.options.getBoolean("inline")
       : false;
 
     if (action === "list") {
-      const game_types = await api.get("game_types");
-      const game_type_fields = [];
-      for (const type of game_types.data) {
-        game_type_fields.push({
-          name: `ID: ${type.id}`,
-          value: type.name,
+      const builds = await api.get("build_types");
+      const build_fields = [];
+
+      for (const build of builds.data) {
+        build_fields.push({
+          name: `ID: ${build.id}`,
+          value: `Class: ${build.class_name}\nBuild: ${build.name}`,
           inline: inline,
         });
       }
       const gtEmbed = {
         color: 0x0099ff,
-        title: "Game Types",
+        title: "Build List",
         author: {
           name: "ChaoX",
         },
-        description: "List of available Game Types.",
-        fields: game_type_fields,
+        description: "List of available Builds.",
+        fields: build_fields,
         footer: {
-          text: "To request a game type added contact an admin.",
+          text: "To request a build to be added contact an admin.",
         },
       };
 
@@ -75,25 +92,26 @@ module.exports = {
         ephemeral: true,
       });
     } else if (action === "add") {
-      if (!game_type) {
+      if (!class_name || !build_name) {
         await interaction.reply({
-          content: `[Error]: name is required`,
+          content: `[Error]: Class name & Build name are required`,
           ephemeral: true,
         });
       } else {
         try {
           api
             .post(
-              "game_types/",
+              "build_types/",
               {
-                name: game_type,
+                class_name: class_name,
+                name: build_name,
               },
               config
             )
             .then(async (result) => {
               if (result.data.status === 201) {
                 await interaction.reply({
-                  content: `Successfully created game type: ${result.data.result.name}`,
+                  content: `Successfully Created: Class ${result.data.result.class_name} Build ${result.data.result.name}`,
                   ephemeral: true,
                 });
               }
@@ -101,7 +119,7 @@ module.exports = {
             .catch(async (error) => {
               if (error.response) {
                 await interaction.reply({
-                  content: `Failed to create the game type! Game Type names must be unique.`,
+                  content: `Failed to create the build! Build names must be unique.`,
                   ephemeral: true,
                 });
               } else if (error.request) {
@@ -115,24 +133,25 @@ module.exports = {
         }
       }
     } else if (action === "modify") {
-      if (!game_type || !game_type_id) {
+      if (!build_name || !build_id || !class_name) {
         await interaction.reply({
-          content: `[Error]: name and id are required`,
+          content: `[Error]: Build Name, Class Name and id are required`,
           ephemeral: true,
         });
       } else {
         api
           .put(
-            `game_types/${game_type_id}/`,
+            `build_types/${build_id}/`,
             {
-              name: game_type,
+              class_name: class_name,
+              name: build_name,
             },
             config
           )
           .then(async (result) => {
             if (result.data.status === 200) {
               await interaction.reply({
-                content: `Successfully updated game type: ${result.data.result.name}`,
+                content: `Successfully Updated: Class ${result.data.result.class_name} Build ${result.data.result.name}`,
                 ephemeral: true,
               });
             }
@@ -140,7 +159,7 @@ module.exports = {
           .catch(async (error) => {
             if (error.response) {
               await interaction.reply({
-                content: `Failed to update game type: ${game_type_id}. Game Type names must be unique.`,
+                content: `Failed to update build: ${build_id}. Build names must be unique.`,
                 ephemeral: true,
               });
             } else if (error.request) {
@@ -151,17 +170,17 @@ module.exports = {
           });
       }
     } else {
-      if (!game_type_id) {
+      if (!build_id) {
         await interaction.reply({
-          content: `[Error]: id is required`,
+          content: `[Error]: Build ID is required`,
           ephemeral: true,
         });
       } else {
         api
-          .delete(`game_types/${game_type_id}/`, config)
+          .delete(`build_types/${build_id}/`, config)
           .then(async (result) => {
             await interaction.reply({
-              content: `Successfully deleted the game type with the ID of ${game_type_id}`,
+              content: `Successfully deleted the build with the ID of ${build_id}`,
               ephemeral: true,
             });
           })
@@ -171,7 +190,7 @@ module.exports = {
               console.log(error.response.status);
               console.log(error.response.headers);
               await interaction.reply({
-                content: `Failed to delete game type.`,
+                content: `Failed to delete build.`,
                 ephemeral: true,
               });
             } else if (error.request) {
