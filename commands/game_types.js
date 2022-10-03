@@ -13,6 +13,10 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("game_types")
     .setDescription("List, Add, Modify & Remove Game Types.")
+    .setDMPermission(false)
+    .setDefaultMemberPermissions(
+      PermissionFlagsBits.KickMembers | PermissionFlagsBits.BanMembers
+    )
     .addStringOption((option) =>
       option
         .setName("action")

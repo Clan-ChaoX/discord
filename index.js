@@ -5,7 +5,12 @@ const { Config } = require("./config.json");
 // require("./services/events");
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.GuildMessages,
+  ],
 });
 
 // Load Commands
@@ -35,5 +40,4 @@ for (const file of eventFiles) {
     client.on(event.name, (...args) => event.execute(...args));
   }
 }
-
 client.login(Config.token);

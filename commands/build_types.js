@@ -13,6 +13,10 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("build_types")
     .setDescription("List, Add, Modify & Remove Build Types.")
+    .setDMPermission(false)
+    .setDefaultMemberPermissions(
+      PermissionFlagsBits.KickMembers | PermissionFlagsBits.BanMembers
+    )
     .addStringOption((option) =>
       option
         .setName("action")

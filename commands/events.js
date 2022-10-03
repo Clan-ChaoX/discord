@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
-const moment = require("moment");
 const { api } = require("../services/api.js");
 const { Config } = require("../config.json");
 
@@ -14,6 +13,10 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("events")
     .setDescription("List, Add, Modify & Remove Events.")
+    .setDMPermission(false)
+    .setDefaultMemberPermissions(
+      PermissionFlagsBits.KickMembers | PermissionFlagsBits.BanMembers
+    )
     .addStringOption((option) =>
       option
         .setName("action")
