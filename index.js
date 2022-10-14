@@ -2,7 +2,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { Client, GatewayIntentBits, Collection } = require("discord.js");
 const { Config } = require("./config.json");
-// require("./services/events");
+const later = require("later");
 
 const client = new Client({
   intents: [
@@ -53,4 +53,5 @@ for (const file of eventFiles) {
     client.on(event.name, (...args) => event.execute(...args));
   }
 }
+
 client.login(Config.token);

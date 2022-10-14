@@ -16,6 +16,7 @@ const Options = [
   "BAAL_ROLE", // Role to announce on new Baal Games
   "BAAL_RUNNER_ROLE", // Role assigned to runners
   "NEW_GAME_DELETE_DELAY", // Delay before deleting the new game message
+  "MAX_GAME_TIME", // Max Game Time in Minutes
 ];
 
 module.exports = {

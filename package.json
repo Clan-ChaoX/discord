@@ -21,6 +21,7 @@
   "dependencies": {
     "axios": "^0.27.2",
     "discord.js": "^14.5.0",
+    "later": "^1.2.0",
     "socket.io-client": "^4.5.2"
   },
   "devDependencies": {
